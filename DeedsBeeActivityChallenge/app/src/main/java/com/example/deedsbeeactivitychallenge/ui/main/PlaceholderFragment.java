@@ -57,18 +57,18 @@ public class PlaceholderFragment extends Fragment {
             public void onChanged(@Nullable String s) {
 
                 //First, create view1, then 2
-                if(s != null)
-                {
-                    if(s.equals("View:1"))
-                    {
-                        //Do stuff in Score view:
+                //if(s != null)
+                //{
+                //if(s.equals("View:1"))
+                //{
+                        //Do stuff in Score view when changed:
 
-                    }
-                    else
-                    {
-                        ////Do stuff in Status view:
-                    }
-                }
+                //}
+                //else
+                //{
+                        ////Do stuff in Status view when changed:
+                //}
+                //}
 
 
             }
