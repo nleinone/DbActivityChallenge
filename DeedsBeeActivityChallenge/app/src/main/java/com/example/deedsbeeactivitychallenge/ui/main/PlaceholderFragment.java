@@ -1,9 +1,12 @@
 package com.example.deedsbeeactivitychallenge.ui.main;
 
+import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -13,6 +16,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.deedsbeeactivitychallenge.R;
+
+import java.io.Console;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -47,11 +52,25 @@ public class PlaceholderFragment extends Fragment {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
-        final TextView textView = root.findViewById(R.id.section_label);
-        pageViewModel.getText().observe(this, new Observer<String>() {
+        pageViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+
+                //First, create view1, then 2
+                if(s != null)
+                {
+                    if(s.equals("View:1"))
+                    {
+                        //Do stuff in Score view:
+
+                    }
+                    else
+                    {
+                        ////Do stuff in Status view:
+                    }
+                }
+
+
             }
         });
         return root;
