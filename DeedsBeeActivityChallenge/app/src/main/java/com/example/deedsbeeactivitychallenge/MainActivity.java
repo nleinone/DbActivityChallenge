@@ -1,7 +1,10 @@
 package com.example.deedsbeeactivitychallenge;
 
+import android.net.Uri;
 import android.os.Bundle;
 
+import com.example.deedsbeeactivitychallenge.ui.main.Fragment1;
+import com.example.deedsbeeactivitychallenge.ui.main.Fragment2;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -17,12 +20,18 @@ import android.view.ViewGroup;
 
 import com.example.deedsbeeactivitychallenge.ui.main.SectionsPagerAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Fragment1.OnFragmentInteractionListener,
+        Fragment2.OnFragmentInteractionListener {
 
     private int[] icons = {
             R.drawable.star,
             R.drawable.pie,
     };
+
+    @Override
+    public void onFragmentInteraction(Uri uri){
+        //you can leave it empty
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

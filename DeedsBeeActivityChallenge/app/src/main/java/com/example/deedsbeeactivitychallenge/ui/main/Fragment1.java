@@ -15,12 +15,12 @@ import com.example.deedsbeeactivitychallenge.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link statsFragment.OnFragmentInteractionListener} interface
+ * {@link Fragment1.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link statsFragment#newInstance} factory method to
+ * Use the {@link Fragment1#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class statsFragment extends Fragment {
+public class Fragment1 extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -32,7 +32,7 @@ public class statsFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public statsFragment() {
+    public Fragment1() {
         // Required empty public constructor
     }
 
@@ -42,11 +42,11 @@ public class statsFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment statsFragment.
+     * @return A new instance of fragment Fragment1.
      */
     // TODO: Rename and change types and number of parameters
-    public static statsFragment newInstance(String param1, String param2) {
-        statsFragment fragment = new statsFragment();
+    public static Fragment1 newInstance(String param1, String param2) {
+        Fragment1 fragment = new Fragment1();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -67,7 +67,7 @@ public class statsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stats, container, false);
+        return inflater.inflate(R.layout.fragment_fragment1, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
