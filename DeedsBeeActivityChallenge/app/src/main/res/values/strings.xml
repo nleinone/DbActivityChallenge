@@ -3,6 +3,9 @@
     <string name="tab_text_1">Score</string>
     <string name="tab_text_2">Stats</string>
 
+    <string name="you_are_now">You are now: </string>
+    <string name="Default_activity">Still</string>
+
     <string name="todayScoreTv">Today\'s Score:</string>
     <string name="todayScoreResultTv">0</string>
     <string name="distanceWalkedTv">Distance walked (m):</string>
@@ -12,6 +15,16 @@
     <string name="scoreSpentResultTv">0</string>
     <string name="currentScoreTv">Current score:</string>
     <string name="currentScoreResultTv">0</string>
+
+    <string name="bicycle">bicycle</string>
+    <string name="foot">foot</string>
+    <string name="running">running</string>
+    <string name="still">still</string>
+    <string name="tilting">tilting</string>
+    <string name="walking">walking</string>
+    <string name="vehicle">vehicle</string>
+    <string name="unknown_activity">unknown_activity</string>
+
 
     <string name="resetScoreBtnTv">RESET SCORES</string>
 </resources>

@@ -29,4 +29,39 @@
         app:layout_constraintEnd_toEndOf="@+id/scoreCircle"
         app:layout_constraintStart_toStartOf="@+id/scoreCircle"
         app:layout_constraintTop_toTopOf="@+id/scoreCircle" />
+
+    <TextView
+        android:id="@+id/activityTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Default_activity"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scoreCircle" />
+
+    <TextView
+        android:id="@+id/confTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confidence"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activityTv"
+        app:layout_constraintVertical_bias="0.137" />
+
+    <TextView
+        android:id="@+id/activityTitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/you_are_now"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/activityTv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scoreCircle" />
 </androidx.constraintlayout.widget.ConstraintLayout>
