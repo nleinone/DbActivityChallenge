@@ -1,6 +1,7 @@
 package com.example.deedsbeeactivitychallenge;
 
 import android.content.BroadcastReceiver;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
@@ -22,6 +23,9 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
+
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.deedsbeeactivitychallenge.ui.main.SectionsPagerAdapter;
@@ -70,8 +74,8 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
                 }
             }
         };
-
         startTracking();
+        updateStatistics();
 
     }
 
@@ -81,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
 
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
                 new IntentFilter(Constants.BROADCAST_DETECTED_ACTIVITY));
-
+        updateStatistics();
     }
 
     @Override
@@ -140,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
                 String text = "Confidence: " + confidence;
                 updateScore(label);
                 txtConfidence.setText(text);
+                updateStatistics();
             }
             catch(Exception e)
             {
@@ -147,6 +152,65 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
                 Log.v("MainActivity ERROR", "User activity: " + label + ", Confidence: " + confidence);
             }
         }
+    }
+
+    private void saveIntValueToSharedPref(String key, int saved_int)
+    {
+        Context context = getApplicationContext();
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                key, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(key, saved_int);
+        editor.apply();
+    }
+
+    private int getIntValueFromSharedPref(String key)
+    {
+        Context context = getApplicationContext();
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                key, Context.MODE_PRIVATE);
+
+        return sharedPref.getInt(key, 0);
+    }
+
+    private void updateStatistics()
+    {
+
+        TextView currentScoreTv = findViewById(R.id.currentScoreResultTextView);
+        TextView totalScoreTv = findViewById(R.id.todayScoreResultTextView);
+        TextView distanceWalkedTv = findViewById(R.id.distanceWalkedResultTextView);
+        TextView currentScoreCircleTv = findViewById(R.id.scoreTextView);
+        //Get current score:
+        try
+        {
+
+            int currentScore = getIntValueFromSharedPref("currentScore");
+            String currentScoreStr = Integer.toString(currentScore);
+            currentScoreTv.setText(currentScoreStr);
+
+            currentScoreCircleTv.setText(currentScoreStr);
+
+            int totalScore = getIntValueFromSharedPref("totalScore");
+            String totalScoreStr = Integer.toString(currentScore);
+            totalScoreTv.setText(totalScoreStr);
+
+            int distance = getIntValueFromSharedPref("distance");
+            String distanceStr = Integer.toString(distance);
+            distanceWalkedTv.setText(distanceStr);
+
+            Log.e("MainActivity", "currentScore: " + currentScoreStr);
+            Log.e("MainActivity", "totalScore: " + totalScoreStr);
+            Log.e("MainActivity", "dist: " + distanceStr);
+        }
+        catch(NullPointerException e)
+        {
+            Log.e("MainActivity", e.toString());
+            //totalScoreTv.setText("0");
+            //distanceWalkedTv.setText("0");
+            //currentScoreTv.setText("0");
+        }
+
     }
 
     private void startTracking() {
@@ -157,12 +221,13 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
 
     private void edit_score(int current_score_int, TextView scoreTv, Boolean isPenalty, int pointModifier)
     {
-
+        String key = "currentScore";
         if(isPenalty)
         {
             current_score_int = current_score_int - pointModifier;
             String current_score_string = Integer.toString(current_score_int);
             scoreTv.setText(current_score_string);
+            saveIntValueToSharedPref(key, current_score_int);
             updateScoreColor(scoreTv);
         }
         else
@@ -170,6 +235,14 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
             current_score_int = current_score_int + pointModifier;
             String current_score_string = Integer.toString(current_score_int);
             scoreTv.setText(current_score_string);
+            //Save current score
+            saveIntValueToSharedPref(key, current_score_int);
+
+            //Save total score
+            int totalScore = getIntValueFromSharedPref("totalScore");
+            totalScore = totalScore + current_score_int;
+            saveIntValueToSharedPref("totalScore", totalScore);
+
             updateScoreColor(scoreTv);
         }
     }
@@ -304,9 +377,5 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
                 edit_score(current_score_int, scoreTv, isPenalty, still_penalty);
             }
         }
-
-        //Change the color of the score textView:
-
     }
-
 }
