@@ -6,9 +6,9 @@ public class Constants {
 
     public static final String BROADCAST_DETECTED_ACTIVITY = "activity_intent";
 
-    static final long DETECTION_INTERVAL_IN_MILLISECONDS = 10 * 1000;
+    static final long DETECTION_INTERVAL_IN_MILLISECONDS = 2 * 1000;
 
-    public static final int CONFIDENCE = 70;
+    public static final int CONFIDENCE = 65;
 
     public static final int WALKING_SCORE = 10;
 
@@ -18,5 +18,8 @@ public class Constants {
 
     public static final int MAX_SCORE = 1000;
 
-    public static final int MIN_SCORE = 0;
+    public static final int MIN_SCORE = -1000;
+
+    public static final int PENALTY_DELAY = 15000;
+
 }

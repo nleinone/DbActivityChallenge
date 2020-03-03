@@ -16,8 +16,7 @@
             android:name=".ActivityIntentService"
             android:exported="false" />
         <service
-            android:name=".ui.main.BackgroundDetectedActivitiesService"
-            android:exported="false" />
+            android:name=".ui.main.BackgroundDetectedActivitiesService"/>
         <activity android:name=".ui.main.LaunchActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
