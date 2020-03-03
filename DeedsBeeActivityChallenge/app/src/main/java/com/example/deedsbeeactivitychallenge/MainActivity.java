@@ -2,9 +2,6 @@ package com.example.deedsbeeactivitychallenge;
 
 import android.content.BroadcastReceiver;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 
 import com.example.deedsbeeactivitychallenge.ui.main.BackgroundDetectedActivitiesService;
@@ -24,8 +21,6 @@ import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
 
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import android.os.Handler;
@@ -46,11 +41,6 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     //Timer for penalty: REF: https://stackoverflow.com/questions/11434056/how-to-run-a-method-every-x-seconds
     Handler handler = new Handler();
     Runnable runnable;
-
-    @Override
-    public void onFragmentInteraction(Uri uri){
-        //you can leave it empty
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +81,9 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
 
         handler.postDelayed( runnable = new Runnable() {
             public void run() {
-                //do something
+
                 TextView scoreTv = findViewById(R.id.scoreTextView);
-                String current_score_string = scoreTv.getText().toString();
-                int current_score_int = Integer.parseInt(current_score_string);
+                int current_score_int = getIntValueFromSharedPref("currentScore");
                 Boolean isPenalty = true;
                 int still_penalty = Constants.PENALTY_SCORE;
 
@@ -103,12 +92,12 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
                 if(statusStr.equals("still"))
                 {
                     edit_score(current_score_int, scoreTv, isPenalty, still_penalty);
+                    updateStatistics();
                 }
 
                 handler.postDelayed(runnable, Constants.PENALTY_DELAY);
             }
         }, Constants.PENALTY_DELAY);
-
 
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
                 new IntentFilter(Constants.BROADCAST_DETECTED_ACTIVITY));
@@ -121,10 +110,8 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
 
         handler.postDelayed( runnable = new Runnable() {
             public void run() {
-                //do something
                 TextView scoreTv = findViewById(R.id.scoreTextView);
-                String current_score_string = scoreTv.getText().toString();
-                int current_score_int = Integer.parseInt(current_score_string);
+                int current_score_int = getIntValueFromSharedPref("currentScore");
                 Boolean isPenalty = true;
                 int still_penalty = Constants.PENALTY_SCORE;
 
@@ -133,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
                 if(statusStr.equals("still"))
                 {
                     edit_score(current_score_int, scoreTv, isPenalty, still_penalty);
+                    updateStatistics();
                 }
 
                 handler.postDelayed(runnable, Constants.PENALTY_DELAY);
@@ -202,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         }
     }
 
-    private void saveIntValueToSharedPref(String key, int saved_int)
+    public void saveIntValueToSharedPref(String key, int saved_int)
     {
         Context context = getApplicationContext();
         SharedPreferences sharedPref = context.getSharedPreferences(
@@ -213,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         editor.apply();
     }
 
-    private void saveStrValueToSharedPref(String key, String saved_str)
+    public void saveStrValueToSharedPref(String key, String saved_str)
     {
         Context context = getApplicationContext();
         SharedPreferences sharedPref = context.getSharedPreferences(
@@ -224,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         editor.apply();
     }
 
-    private int getIntValueFromSharedPref(String key)
+    public int getIntValueFromSharedPref(String key)
     {
         Context context = getApplicationContext();
         SharedPreferences sharedPref = context.getSharedPreferences(
@@ -233,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         return sharedPref.getInt(key, 0);
     }
 
-    private String getStrValueToSharedPref(String key)
+    public String getStrValueToSharedPref(String key)
     {
         Context context = getApplicationContext();
         SharedPreferences sharedPref = context.getSharedPreferences(
@@ -241,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
 
         return sharedPref.getString(key, "");
     }
-    private void updateStatistics()
+    public void updateStatistics()
     {
 
         TextView currentScoreTv = findViewById(R.id.currentScoreResultTextView);
