@@ -1,6 +1,8 @@
 package com.example.deedsbeeactivitychallenge;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -80,6 +82,25 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         if(score == Constants.MIN_SCORE)
         {
             //You lost
+            Context context = getApplicationContext();
+            new AlertDialog.Builder(context)
+                    .setTitle("You lost the challenge :(")
+                    .setMessage("Don't give up! Try again!")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            Log.v("MainActivity", "Scores reset");
+                            saveIntValueToSharedPref("currentScore", 0);
+                            saveIntValueToSharedPref("totalScore", 0);
+                            saveIntValueToSharedPref("distance", 0);
+                            updateStatistics();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
             Log.v("MainActivity", "Scores reset");
             saveIntValueToSharedPref("currentScore", 0);
             saveIntValueToSharedPref("totalScore", 0);
@@ -89,11 +110,25 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         if(score == Constants.MAX_SCORE)
         {
             //You won
-            Log.v("MainActivity", "Scores reset");
-            saveIntValueToSharedPref("currentScore", 0);
-            saveIntValueToSharedPref("totalScore", 0);
-            saveIntValueToSharedPref("distance", 0);
-            updateStatistics();
+            Context context = getApplicationContext();
+            new AlertDialog.Builder(context)
+                    .setTitle("You WON the challenge!!!")
+                    .setMessage("Congratulations! You have beaten the Deedsbee Activity challenge! Take a screenshot of your accomplishment and encourage your friends to do the same")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            Log.v("MainActivity", "Scores reset");
+                            saveIntValueToSharedPref("currentScore", 0);
+                            saveIntValueToSharedPref("totalScore", 0);
+                            saveIntValueToSharedPref("distance", 0);
+                            updateStatistics();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
     }
 
