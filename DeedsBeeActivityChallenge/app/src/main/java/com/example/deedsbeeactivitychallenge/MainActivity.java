@@ -75,6 +75,28 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
 
     }
 
+    private void checkWinningCondition(int score)
+    {
+        if(score == Constants.MIN_SCORE)
+        {
+            //You lost
+            Log.v("MainActivity", "Scores reset");
+            saveIntValueToSharedPref("currentScore", 0);
+            saveIntValueToSharedPref("totalScore", 0);
+            saveIntValueToSharedPref("distance", 0);
+            updateStatistics();
+        }
+        if(score == Constants.MAX_SCORE)
+        {
+            //You won
+            Log.v("MainActivity", "Scores reset");
+            saveIntValueToSharedPref("currentScore", 0);
+            saveIntValueToSharedPref("totalScore", 0);
+            saveIntValueToSharedPref("distance", 0);
+            updateStatistics();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -84,11 +106,14 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
 
                 TextView scoreTv = findViewById(R.id.scoreTextView);
                 int current_score_int = getIntValueFromSharedPref("currentScore");
+                checkWinningCondition(current_score_int);
                 Boolean isPenalty = true;
                 int still_penalty = Constants.PENALTY_SCORE;
 
                 String statusStr = getStrValueToSharedPref("activityStatus");
                 Log.v("MainActivity", "statusStrRes: " + statusStr);
+
+                String freeze_status = getStrValueToSharedPref("freezeStatus");
                 if(statusStr.equals("still"))
                 {
                     edit_score(current_score_int, scoreTv, isPenalty, still_penalty);
@@ -277,8 +302,10 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     private void edit_score(int current_score_int, TextView scoreTv, Boolean isPenalty, int pointModifier)
     {
         String key = "currentScore";
+
         if(isPenalty)
         {
+            saveStrValueToSharedPref("freezeStatus", "false");
             current_score_int = current_score_int - pointModifier;
             String current_score_string = Integer.toString(current_score_int);
             scoreTv.setText(current_score_string);
@@ -287,6 +314,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         }
         else
         {
+            saveStrValueToSharedPref("freezeStatus", "false");
             current_score_int = current_score_int + pointModifier;
             String current_score_string = Integer.toString(current_score_int);
             scoreTv.setText(current_score_string);

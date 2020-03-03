@@ -1,7 +1,7 @@
 package com.example.deedsbeeactivitychallenge.ui.main;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.app.AlertDialog;
+
 
 import com.example.deedsbeeactivitychallenge.R;
 
@@ -36,14 +38,32 @@ public class Fragment2 extends Fragment {
         {
             View view = inflater.inflate(R.layout.fragment_fragment2, container, false);
             Button resetBtn = view.findViewById(R.id.resetScoreBtn);
+            final Context context = getContext();
+            //REF: https://stackoverflow.com/questions/2115758/how-do-i-display-an-alert-dialog-on-android
             resetBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Log.v("MainActivity", "Scores reset");
-                    mListener.saveIntValueToSharedPref("currentScore", 0);
-                    mListener.saveIntValueToSharedPref("totalScore", 0);
-                    mListener.saveIntValueToSharedPref("distance", 0);
-                    mListener.updateStatistics();
 
+                    new AlertDialog.Builder(context)
+                            .setTitle("RESET ALL STATS AND START OVER?")
+                            .setMessage("Are you sure you want to RESET and Start the challenge over?")
+
+                            // Specifying a listener allows you to take an action before dismissing the dialog.
+                            // The dialog is automatically dismissed when a dialog button is clicked.
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    Log.v("MainActivity", "Scores reset");
+                                    mListener.saveIntValueToSharedPref("currentScore", 0);
+                                    mListener.saveIntValueToSharedPref("totalScore", 0);
+                                    mListener.saveIntValueToSharedPref("distance", 0);
+                                    mListener.updateStatistics();
+                                }
+                            })
+
+                            // A null listener allows the button to dismiss the dialog and take no further action.
+                            .setNegativeButton(android.R.string.no, null)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
                 }
             });
             return view;
