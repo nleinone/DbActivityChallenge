@@ -47,7 +47,8 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //Activity recognition:
+        calculateScoreFromTime();
+
         txtActivity = findViewById(R.id.activityTv);
         txtConfidence = findViewById(R.id.confTv);
 
@@ -74,8 +75,6 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         };
         startTracking();
     }
-
-
 
     @Override
     protected void onStart() {
@@ -112,6 +111,12 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
     }
 
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        saveTimeToPrefs();
+    }
     private void handleUserActivity(int type, int confidence) {
         String label = getString(R.string.unknown_activity);
 
@@ -213,13 +218,53 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         SharedPreferences sharedPref = context.getSharedPreferences(
                 key, Context.MODE_PRIVATE);
 
-        return sharedPref.getString(key, "");
+        return sharedPref.getString(key, "0");
     }
 
     private void startTracking() {
         Log.v("MainActivity", "startTracking");
         Intent intent1 = new Intent(MainActivity.this, BackgroundDetectedActivitiesService.class);
         startService(intent1);
+    }
+
+    private void saveTimeToPrefs()
+    {
+        Long tsLong = System.currentTimeMillis()/1000;
+        String ts = tsLong.toString();
+        Log.e("MainActivity", "Time: " + ts);
+        saveStrValueToSharedPref("currentTime", ts);
+    }
+
+    private void calculateScoreFromTime()
+    {
+        String savedTimeStr = getStrValueToSharedPref("currentTime");
+        int savedTimeInt = Integer.parseInt(savedTimeStr);
+        Log.e("MainActivity", "savedTimeInt: " + savedTimeInt);
+
+        if(savedTimeInt != 0)
+        {
+            Long tsLong = System.currentTimeMillis()/1000;
+            String ts = tsLong.toString();
+            int currentTimeInt = Integer.parseInt(ts);
+
+            int timeDifference = currentTimeInt - savedTimeInt;
+
+            Log.e("MainActivity", "currentTimeInt: " + currentTimeInt);
+            Log.e("MainActivity", "savedTimeInt: " + savedTimeInt);
+            Log.e("MainActivity", "Time diff: " + timeDifference);
+
+            //Time difference affects to the score the following way:
+            //Constants.PENALTY_DELAY = N / 1000 (seconds)
+            //Given penalty to the current score = timeDifference (seconds) / N
+
+            int currentScore = getIntValueFromSharedPref("currentScore");
+            int penaltyScore = timeDifference / (Constants.PENALTY_DELAY / 1000);
+            Log.e("MainActivity", "(Constants.PENALTY_DELAY / 1000): " + (Constants.PENALTY_DELAY / 1000));
+            Log.e("MainActivity", "penaltyScore: " + penaltyScore);
+            int newScore = currentScore - penaltyScore;
+            saveIntValueToSharedPref("currentScore", newScore);
+        }
+
     }
 
     private void checkWinningCondition()
