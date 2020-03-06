@@ -6,7 +6,7 @@ public class Constants {
 
     public static final String BROADCAST_DETECTED_ACTIVITY = "activity_intent";
 
-    static final long DETECTION_INTERVAL_IN_MILLISECONDS = 2 * 1000;
+    static final long DETECTION_INTERVAL_IN_MILLISECONDS = 2 * 5000;
 
     public static final int CONFIDENCE = 65;
 
@@ -16,10 +16,10 @@ public class Constants {
 
     public static final int PENALTY_SCORE = 1;
 
-    public static final int MAX_SCORE = 10000; //It gets roughly 250 minutes to drain 1k points.
+    public static final int MAX_SCORE = 10000; //It gets roughly 250 minutes to drain 1k points with 15000 penalty delay.
 
     public static final int MIN_SCORE = -1000;
 
-    public static final int PENALTY_DELAY = 5000;
+    public static final int PENALTY_DELAY = 15000;
 
 }

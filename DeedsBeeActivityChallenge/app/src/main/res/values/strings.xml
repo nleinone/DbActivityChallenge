@@ -6,12 +6,12 @@
     <string name="you_are_now">You are now: </string>
     <string name="Default_activity">Still</string>
 
-    <string name="todayScoreTv">Today\'s Score:</string>
+    <string name="todayScoreTv">Total Score:</string>
     <string name="todayScoreResultTv">0</string>
-    <string name="distanceWalkedTv">Distance walked (m):</string>
+    <string name="distanceWalkedTv">Goal:</string>
     <string name="distanceWalkedResultTv">0</string>
     <string name="meterTv">meters</string>
-    <string name="scoreSpentTv">Score spent (Today):</string>
+    <string name="scoreSpentTv">Losing limit:</string>
     <string name="scoreSpentResultTv">0</string>
     <string name="currentScoreTv">Current score:</string>
     <string name="currentScoreResultTv">0</string>

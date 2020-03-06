@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         if(score == Constants.MIN_SCORE)
         {
             //You lost
-            Context context = getApplicationContext();
+            Context context = MainActivity.this;
             new AlertDialog.Builder(context)
                     .setTitle("You lost the challenge :(")
                     .setMessage("Don't give up! Try again!")
@@ -379,6 +379,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         TextView totalScoreTv = findViewById(R.id.todayScoreResultTextView);
         TextView distanceWalkedTv = findViewById(R.id.distanceWalkedResultTextView);
         TextView currentScoreCircleTv = findViewById(R.id.scoreTextView);
+        TextView losingScoreTv = findViewById(R.id.scoreSpentResultTextView);
 
         int currentScore = getIntValueFromSharedPref("currentScore");
         int totalScore = getIntValueFromSharedPref("totalScore");
@@ -392,9 +393,11 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
             String totalScoreStr = Integer.toString(totalScore);
             totalScoreTv.setText(totalScoreStr);
 
-            int distance = getIntValueFromSharedPref("distance");
-            String distanceStr = Integer.toString(distance);
+            String distanceStr = Integer.toString(Constants.MAX_SCORE);
             distanceWalkedTv.setText(distanceStr);
+
+            String losingLimitStr = Integer.toString(Constants.MIN_SCORE);
+            losingScoreTv.setText(losingLimitStr);
 
             updateScoreColor(currentScoreCircleTv);
 
