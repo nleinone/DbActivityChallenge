@@ -73,64 +73,9 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
             }
         };
         startTracking();
-        updateStatistics();
-
     }
 
-    private void checkWinningCondition(int score)
-    {
-        if(score == Constants.MIN_SCORE)
-        {
-            //You lost
-            Context context = getApplicationContext();
-            new AlertDialog.Builder(context)
-                    .setTitle("You lost the challenge :(")
-                    .setMessage("Don't give up! Try again!")
 
-                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                    // The dialog is automatically dismissed when a dialog button is clicked.
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            Log.v("MainActivity", "Scores reset");
-                            saveIntValueToSharedPref("currentScore", 0);
-                            saveIntValueToSharedPref("totalScore", 0);
-                            saveIntValueToSharedPref("distance", 0);
-                            updateStatistics();
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-            Log.v("MainActivity", "Scores reset");
-            saveIntValueToSharedPref("currentScore", 0);
-            saveIntValueToSharedPref("totalScore", 0);
-            saveIntValueToSharedPref("distance", 0);
-            updateStatistics();
-        }
-        if(score == Constants.MAX_SCORE)
-        {
-            //You won
-            Context context = getApplicationContext();
-            new AlertDialog.Builder(context)
-                    .setTitle("You WON the challenge!!!")
-                    .setMessage("Congratulations! You have beaten the Deedsbee Activity challenge! Take a screenshot of your accomplishment and encourage your friends to do the same")
-
-                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                    // The dialog is automatically dismissed when a dialog button is clicked.
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            Log.v("MainActivity", "Scores reset");
-                            saveIntValueToSharedPref("currentScore", 0);
-                            saveIntValueToSharedPref("totalScore", 0);
-                            saveIntValueToSharedPref("distance", 0);
-                            updateStatistics();
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-        }
-    }
 
     @Override
     protected void onStart() {
@@ -139,37 +84,14 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         handler.postDelayed( runnable = new Runnable() {
             public void run() {
 
-                TextView scoreTv = findViewById(R.id.scoreTextView);
-                int current_score_int = getIntValueFromSharedPref("currentScore");
-                checkWinningCondition(current_score_int);
-                Boolean isPenalty = true;
-                int still_penalty = Constants.PENALTY_SCORE;
-
-                String statusStr = getStrValueToSharedPref("activityStatus");
-                Log.v("MainActivity", "statusStrRes: " + statusStr);
-
-                String freeze_status = getStrValueToSharedPref("freezeStatus");
-                try
-                {
-                    if(statusStr.equals("still"))
-                    {
-                        edit_score(current_score_int, scoreTv, isPenalty, still_penalty);
-                        updateStatistics();
-                    }
-                }
-                catch (NullPointerException e)
-                {
-                    Log.e("NullPointerException", "e: " + e);
-                }
-
-
+                updateScore();
+                updateTextViews();
+                checkWinningCondition();
                 handler.postDelayed(runnable, Constants.PENALTY_DELAY);
             }
         }, Constants.PENALTY_DELAY);
-
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
                 new IntentFilter(Constants.BROADCAST_DETECTED_ACTIVITY));
-        updateStatistics();
     }
 
     @Override
@@ -178,25 +100,16 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         handler.removeCallbacksAndMessages(null);
         handler.postDelayed( runnable = new Runnable() {
             public void run() {
-                TextView scoreTv = findViewById(R.id.scoreTextView);
-                int current_score_int = getIntValueFromSharedPref("currentScore");
-                Boolean isPenalty = true;
-                int still_penalty = Constants.PENALTY_SCORE;
 
-                String statusStr = getStrValueToSharedPref("activityStatus");
-                Log.v("MainActivity", "statusStrPause: " + statusStr);
-                if(statusStr.equals("still"))
-                {
-                    edit_score(current_score_int, scoreTv, isPenalty, still_penalty);
-                    updateStatistics();
-                }
+                updateScore();
+                updateTextViews();
+                checkWinningCondition();
 
                 handler.postDelayed(runnable, Constants.PENALTY_DELAY);
             }
         }, Constants.PENALTY_DELAY);
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-
     }
 
     private void handleUserActivity(int type, int confidence) {
@@ -246,9 +159,14 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
                 Log.v("MainActivity", "User activity: " + label + ", Confidence: " + confidence);
                 txtActivity.setText(label);
                 String text = "Confidence: " + confidence;
-                updateScore(label);
+
+
                 txtConfidence.setText(text);
-                updateStatistics();
+
+                //updateScore(label);
+                //updateStatistics();
+
+                saveStrValueToSharedPref("activityStatus", label);
             }
             catch(Exception e)
             {
@@ -297,44 +215,6 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
 
         return sharedPref.getString(key, "");
     }
-    public void updateStatistics()
-    {
-
-        TextView currentScoreTv = findViewById(R.id.currentScoreResultTextView);
-        TextView totalScoreTv = findViewById(R.id.todayScoreResultTextView);
-        TextView distanceWalkedTv = findViewById(R.id.distanceWalkedResultTextView);
-        TextView currentScoreCircleTv = findViewById(R.id.scoreTextView);
-        //Get current score:
-        try
-        {
-
-            int currentScore = getIntValueFromSharedPref("currentScore");
-            String currentScoreStr = Integer.toString(currentScore);
-            currentScoreTv.setText(currentScoreStr);
-
-            currentScoreCircleTv.setText(currentScoreStr);
-
-            int totalScore = getIntValueFromSharedPref("totalScore");
-            String totalScoreStr = Integer.toString(currentScore);
-            totalScoreTv.setText(totalScoreStr);
-
-            int distance = getIntValueFromSharedPref("distance");
-            String distanceStr = Integer.toString(distance);
-            distanceWalkedTv.setText(distanceStr);
-
-            Log.e("MainActivity", "currentScore: " + currentScoreStr);
-            Log.e("MainActivity", "totalScore: " + totalScoreStr);
-            Log.e("MainActivity", "dist: " + distanceStr);
-        }
-        catch(NullPointerException e)
-        {
-            Log.e("MainActivity", e.toString());
-            //totalScoreTv.setText("0");
-            //distanceWalkedTv.setText("0");
-            //currentScoreTv.setText("0");
-        }
-
-    }
 
     private void startTracking() {
         Log.v("MainActivity", "startTracking");
@@ -342,34 +222,59 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         startService(intent1);
     }
 
-    private void edit_score(int current_score_int, TextView scoreTv, Boolean isPenalty, int pointModifier)
+    private void checkWinningCondition()
     {
-        String key = "currentScore";
-
-        if(isPenalty)
+        int score = getIntValueFromSharedPref("currentScore");
+        if(score == Constants.MIN_SCORE)
         {
-            saveStrValueToSharedPref("freezeStatus", "false");
-            current_score_int = current_score_int - pointModifier;
-            String current_score_string = Integer.toString(current_score_int);
-            scoreTv.setText(current_score_string);
-            saveIntValueToSharedPref(key, current_score_int);
-            updateScoreColor(scoreTv);
+            //You lost
+            Context context = getApplicationContext();
+            new AlertDialog.Builder(context)
+                    .setTitle("You lost the challenge :(")
+                    .setMessage("Don't give up! Try again!")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            Log.v("MainActivity", "Scores reset");
+                            saveIntValueToSharedPref("currentScore", 0);
+                            saveIntValueToSharedPref("totalScore", 0);
+                            saveIntValueToSharedPref("distance", 0);
+                            updateTextViews();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+            Log.v("MainActivity", "Scores reset");
+            saveIntValueToSharedPref("currentScore", 0);
+            saveIntValueToSharedPref("totalScore", 0);
+            saveIntValueToSharedPref("distance", 0);
+            updateTextViews();
         }
-        else
+        if(score == Constants.MAX_SCORE)
         {
-            saveStrValueToSharedPref("freezeStatus", "false");
-            current_score_int = current_score_int + pointModifier;
-            String current_score_string = Integer.toString(current_score_int);
-            scoreTv.setText(current_score_string);
-            //Save current score
-            saveIntValueToSharedPref(key, current_score_int);
+            //You won
+            Context context = getApplicationContext();
+            new AlertDialog.Builder(context)
+                    .setTitle("You WON the challenge!!!")
+                    .setMessage("Congratulations! You have beaten the Deedsbee Activity challenge! Take a screenshot of your accomplishment and encourage your friends to do the same")
 
-            //Save total score
-            int totalScore = getIntValueFromSharedPref("totalScore");
-            totalScore = totalScore + current_score_int;
-            saveIntValueToSharedPref("totalScore", totalScore);
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
 
-            updateScoreColor(scoreTv);
+                            Log.v("MainActivity", "Scores reset");
+                            saveIntValueToSharedPref("currentScore", 0);
+                            saveIntValueToSharedPref("totalScore", 0);
+                            saveIntValueToSharedPref("distance", 0);
+                            updateTextViews();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
     }
 
@@ -423,87 +328,160 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         }
     }
 
-    private void updateScore(String activity_status)
+    public void updateTextViews()
     {
+        TextView currentScoreTv = findViewById(R.id.currentScoreResultTextView);
+        TextView totalScoreTv = findViewById(R.id.todayScoreResultTextView);
+        TextView distanceWalkedTv = findViewById(R.id.distanceWalkedResultTextView);
+        TextView currentScoreCircleTv = findViewById(R.id.scoreTextView);
 
-        TextView scoreTv = findViewById(R.id.scoreTextView);
-        String current_score_string = scoreTv.getText().toString();
-        int current_score_int = Integer.parseInt(current_score_string);
+        int currentScore = getIntValueFromSharedPref("currentScore");
+        int totalScore = getIntValueFromSharedPref("totalScore");
 
+        try
+        {
+            String currentScoreStr = Integer.toString(currentScore);
+            currentScoreTv.setText(currentScoreStr);
+            currentScoreCircleTv.setText(currentScoreStr);
+
+            String totalScoreStr = Integer.toString(totalScore);
+            totalScoreTv.setText(totalScoreStr);
+
+            int distance = getIntValueFromSharedPref("distance");
+            String distanceStr = Integer.toString(distance);
+            distanceWalkedTv.setText(distanceStr);
+
+            updateScoreColor(currentScoreCircleTv);
+
+            Log.e("MainActivity", "currentScore: " + currentScoreStr);
+            Log.e("MainActivity", "totalScore: " + totalScoreStr);
+            Log.e("MainActivity", "dist: " + distanceStr);
+            String activity = getStrValueToSharedPref("currentActivity");
+            Log.e("MainActivity", "activity: " + activity);
+        }
+        catch(NullPointerException e)
+        {
+            Log.e("MainActivity", e.toString());
+        }
+
+    }
+
+    private void calculateAndSaveScoreToPrefs(int current_score_int, Boolean isPenalty, int pointModifier)
+    {
+        String key = "currentScore";
+
+        if(isPenalty)
+        {
+            saveStrValueToSharedPref("freezeStatus", "false");
+            current_score_int = current_score_int - pointModifier;
+            saveIntValueToSharedPref(key, current_score_int);
+        }
+        else
+        {
+            saveStrValueToSharedPref("freezeStatus", "false");
+            current_score_int = current_score_int + pointModifier;
+            //Save current score
+            saveIntValueToSharedPref(key, current_score_int);
+
+            //Save total score
+            int totalScore = getIntValueFromSharedPref("totalScore");
+            totalScore = totalScore + current_score_int;
+            saveIntValueToSharedPref("totalScore", totalScore);
+        }
+    }
+
+    private void updateScore()
+    {
         int still_penalty = Constants.PENALTY_SCORE;
         int walking_score = Constants.WALKING_SCORE;
         int running_score = Constants.RUNNING_SCORE;
         int doNothing_score = 0;
 
+        String activityStatus = getStrValueToSharedPref("activityStatus");
+        Log.v("MainActivity", "statusStrPause: " + activityStatus);
 
-        Log.v("MainActivity", "activity_status: " + activity_status);
-        saveStrValueToSharedPref("activityStatus", activity_status);
+        int currentScore = getIntValueFromSharedPref("currentScore");
+        Log.v("MainActivity", "currentScore: " + currentScore);
 
         //User will lose points when still.
-        if(activity_status.equals(getString(R.string.still)))
+        if(activityStatus.equals(getString(R.string.still)))
         {
             Boolean isPenalty = true;
-            Log.v("MainActivity", "current_score_int: " + current_score_int);
-            if(current_score_int > Constants.MIN_SCORE)
+            if(currentScore > Constants.MIN_SCORE)
             {
-                Log.v("MainActivity", "current_score_int: " + current_score_string);
-                edit_score(current_score_int, scoreTv, isPenalty, doNothing_score);
+                calculateAndSaveScoreToPrefs(currentScore, isPenalty, still_penalty);
             }
             else
             {
-                updateScoreColor(scoreTv);
+                calculateAndSaveScoreToPrefs(currentScore, isPenalty, doNothing_score);
             }
         }
 
         //User will gain points when walking.
-        else if(activity_status.equals(getString(R.string.walking)))
+        else if(activityStatus.equals(getString(R.string.walking)))
         {
-            if (current_score_int < Constants.MAX_SCORE)
+            Boolean isPenalty = false;
+            if (currentScore < Constants.MAX_SCORE)
             {
-                Boolean isPenalty = false;
-                edit_score(current_score_int, scoreTv, isPenalty, walking_score);
+
+                calculateAndSaveScoreToPrefs(currentScore, isPenalty, walking_score);
+            }
+            else
+            {
+                calculateAndSaveScoreToPrefs(currentScore, isPenalty, doNothing_score);
             }
 
         }
 
         //User will lose points when on foot.
-        else if(activity_status.equals(getString(R.string.foot)))
+        else if(activityStatus.equals(getString(R.string.foot)))
         {
-            if(current_score_int < Constants.MAX_SCORE)
+            Boolean isPenalty = false;
+            if(currentScore < Constants.MAX_SCORE)
             {
-                Boolean isPenalty = false;
-                edit_score(current_score_int, scoreTv, isPenalty, walking_score);
+                calculateAndSaveScoreToPrefs(currentScore, isPenalty, walking_score);
+            }
+            else
+            {
+                calculateAndSaveScoreToPrefs(currentScore, isPenalty, doNothing_score);
             }
         }
 
         //User will lose points when running.
-        else if(activity_status.equals(getString(R.string.running)))
+        else if(activityStatus.equals(getString(R.string.running)))
         {
-            if(current_score_int < Constants.MAX_SCORE)
+            Boolean isPenalty = false;
+            if(currentScore < Constants.MAX_SCORE)
             {
-                Boolean isPenalty = false;
-                edit_score(current_score_int, scoreTv, isPenalty, running_score);
+                calculateAndSaveScoreToPrefs(currentScore, isPenalty, running_score);
+            }
+            else
+            {
+                calculateAndSaveScoreToPrefs(currentScore, isPenalty, doNothing_score);
             }
         }
 
         //User will lose points when cycling.
-        else if(activity_status.equals(getString(R.string.bicycle)))
+        else if(activityStatus.equals(getString(R.string.bicycle)))
         {
-            if(current_score_int < Constants.MAX_SCORE)
+            Boolean isPenalty = false;
+            if(currentScore < Constants.MAX_SCORE)
             {
-                Boolean isPenalty = false;
-                edit_score(current_score_int, scoreTv, isPenalty, running_score);
+                calculateAndSaveScoreToPrefs(currentScore, isPenalty, running_score);
             }
-
+            else
+            {
+                calculateAndSaveScoreToPrefs(currentScore, isPenalty, doNothing_score);
+            }
         }
 
         //User will lose points when in vehicle
         else
         {
-            if(current_score_int > Constants.MIN_SCORE) {
+            if(currentScore > Constants.MIN_SCORE) {
 
                 Boolean isPenalty = true;
-                edit_score(current_score_int, scoreTv, isPenalty, doNothing_score);
+                calculateAndSaveScoreToPrefs(currentScore, isPenalty, still_penalty);
             }
         }
     }

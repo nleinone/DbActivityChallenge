@@ -56,7 +56,7 @@ public class Fragment2 extends Fragment {
                                     mListener.saveIntValueToSharedPref("currentScore", 0);
                                     mListener.saveIntValueToSharedPref("totalScore", 0);
                                     mListener.saveIntValueToSharedPref("distance", 0);
-                                    mListener.updateStatistics();
+                                    mListener.updateTextViews();
                                 }
                             })
 
@@ -100,6 +100,6 @@ public class Fragment2 extends Fragment {
         void saveStrValueToSharedPref(String key, String saved_str);
         int getIntValueFromSharedPref(String key);
         String getStrValueToSharedPref(String key);
-        void updateStatistics();
+        void updateTextViews();
     }
 }
