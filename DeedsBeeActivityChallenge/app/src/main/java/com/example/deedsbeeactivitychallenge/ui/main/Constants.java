@@ -20,6 +20,6 @@ public class Constants {
 
     public static final int MIN_SCORE = -1000;
 
-    public static final int PENALTY_DELAY = 15000;
+    public static final int PENALTY_DELAY = 5000;
 
 }

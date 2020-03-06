@@ -133,9 +133,9 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
+    protected void onStart() {
+        super.onStart();
+        handler.removeCallbacksAndMessages(null);
         handler.postDelayed( runnable = new Runnable() {
             public void run() {
 
@@ -149,11 +149,19 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
                 Log.v("MainActivity", "statusStrRes: " + statusStr);
 
                 String freeze_status = getStrValueToSharedPref("freezeStatus");
-                if(statusStr.equals("still"))
+                try
                 {
-                    edit_score(current_score_int, scoreTv, isPenalty, still_penalty);
-                    updateStatistics();
+                    if(statusStr.equals("still"))
+                    {
+                        edit_score(current_score_int, scoreTv, isPenalty, still_penalty);
+                        updateStatistics();
+                    }
                 }
+                catch (NullPointerException e)
+                {
+                    Log.e("NullPointerException", "e: " + e);
+                }
+
 
                 handler.postDelayed(runnable, Constants.PENALTY_DELAY);
             }
@@ -165,9 +173,9 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
+    protected void onStop() {
+        super.onStop();
+        handler.removeCallbacksAndMessages(null);
         handler.postDelayed( runnable = new Runnable() {
             public void run() {
                 TextView scoreTv = findViewById(R.id.scoreTextView);
