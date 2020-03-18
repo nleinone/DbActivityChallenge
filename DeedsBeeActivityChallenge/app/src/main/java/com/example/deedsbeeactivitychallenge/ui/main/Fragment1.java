@@ -20,12 +20,15 @@ public class Fragment1 extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        mListener.updateScore();
+        mListener.updateTextViews();
         return inflater.inflate(R.layout.fragment_fragment1, container, false);
     }
 
@@ -47,5 +50,8 @@ public class Fragment1 extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
+
+        void updateScore();
+        void updateTextViews();
     }
 }

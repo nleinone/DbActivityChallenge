@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
@@ -41,17 +42,17 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     };
 
     //Timer for penalty: REF: https://stackoverflow.com/questions/11434056/how-to-run-a-method-every-x-seconds
-    Handler handler = new Handler();
+    Handler handler = new Handler(Looper.getMainLooper());
     Runnable runnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        calculateScoreFromTime();
 
+        checkWinningCondition();
         txtActivity = findViewById(R.id.activityTv);
         txtConfidence = findViewById(R.id.confTv);
-
+        Log.e("MainActivity", "t5");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
@@ -79,7 +80,13 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     @Override
     protected void onStart() {
         super.onStart();
-        handler.removeCallbacksAndMessages(null);
+        Log.e("MainActivity", "t3");
+        calculateScoreFromTime();
+
+        updateScore();
+        updateTextViews();
+        checkWinningCondition();
+
         handler.postDelayed( runnable = new Runnable() {
             public void run() {
 
@@ -96,25 +103,22 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     @Override
     protected void onStop() {
         super.onStop();
-        handler.removeCallbacksAndMessages(null);
-        handler.postDelayed( runnable = new Runnable() {
-            public void run() {
+        handler.removeCallbacks(runnable);
+        saveTimeToPrefs();
+    }
 
-                updateScore();
-                updateTextViews();
-                checkWinningCondition();
-
-                handler.postDelayed(runnable, Constants.PENALTY_DELAY);
-            }
-        }, Constants.PENALTY_DELAY);
-
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(runnable);
+        saveTimeToPrefs();
     }
 
     @Override
     protected void onDestroy()
     {
         super.onDestroy();
+        Log.e("MainActivity", "t6");
         saveTimeToPrefs();
     }
     private void handleUserActivity(int type, int confidence) {
@@ -260,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
             int currentScore = getIntValueFromSharedPref("currentScore");
             int penaltyScore = timeDifference / (Constants.PENALTY_DELAY / 1000);
             Log.e("MainActivity", "(Constants.PENALTY_DELAY / 1000): " + (Constants.PENALTY_DELAY / 1000));
-            Log.e("MainActivity", "penaltyScore: " + penaltyScore);
+
             int newScore = currentScore - penaltyScore;
             saveIntValueToSharedPref("currentScore", newScore);
         }
@@ -270,8 +274,10 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     private void checkWinningCondition()
     {
         int score = getIntValueFromSharedPref("currentScore");
-        if(score == Constants.MIN_SCORE)
+        Log.e("MainActivity", "t1");
+        if(score <= Constants.MIN_SCORE)
         {
+            Log.e("MainActivity", "t2");
             //You lost
             Context context = MainActivity.this;
             new AlertDialog.Builder(context)
@@ -438,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         }
     }
 
-    private void updateScore()
+    public void updateScore()
     {
         int still_penalty = Constants.PENALTY_SCORE;
         int walking_score = Constants.WALKING_SCORE;
