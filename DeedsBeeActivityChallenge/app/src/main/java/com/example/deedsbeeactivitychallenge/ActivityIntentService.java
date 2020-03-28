@@ -37,7 +37,6 @@ public class ActivityIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
     //Check whether the Intent contains activity recognition data//
-        Log.v("ActivityIntent: ", "onHandleIntent");
         ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
 
         //Get an array of DetectedActivity objects//
@@ -45,7 +44,6 @@ public class ActivityIntentService extends IntentService {
 
         for (DetectedActivity activity: detectedActivities)
         {
-            Log.v("INTENT_SERVICE", "activity: " + activity.toString());
             broadcastActivity(activity);
         }
     }

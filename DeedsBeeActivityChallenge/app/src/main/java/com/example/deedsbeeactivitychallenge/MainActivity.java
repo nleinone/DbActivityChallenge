@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         checkWinningCondition();
         txtActivity = findViewById(R.id.activityTv);
         txtConfidence = findViewById(R.id.confTv);
-        Log.e("MainActivity", "t5");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
@@ -80,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     @Override
     protected void onStart() {
         super.onStart();
-        Log.e("MainActivity", "t3");
         calculateScoreFromTime();
 
         updateScore();
@@ -118,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     protected void onDestroy()
     {
         super.onDestroy();
-        Log.e("MainActivity", "t6");
         saveTimeToPrefs();
     }
     private void handleUserActivity(int type, int confidence) {
@@ -128,68 +125,51 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         switch (type) {
             case DetectedActivity.IN_VEHICLE: {
                 label = getString(R.string.vehicle);
-                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.ON_BICYCLE: {
                 label = getString(R.string.bicycle);
-                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.ON_FOOT: {
                 label = getString(R.string.foot);
-                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.RUNNING: {
                 label = getString(R.string.running);
-                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.STILL: {
                 label = getString(R.string.still);
-                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.TILTING: {
                 label = getString(R.string.tilting);
-                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.WALKING: {
                 label = getString(R.string.walking);
-                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.UNKNOWN: {
                 label = getString(R.string.unknown_activity);
-                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
         }
-        Log.v("ActivityStatus3", "User activity: " + label + ", Confidence: " + confidence);
         txtActivity = findViewById(R.id.activityTv);
         txtConfidence = findViewById(R.id.confTv);
 
         if (confidence > Constants.CONFIDENCE) {
             try
             {
-                //Log.v("MainActivity", "User activity: " + label + ", Confidence: " + confidence);
                 txtActivity.setText(label);
                 String text = "Confidence: " + confidence;
-
-
                 txtConfidence.setText(text);
-
-                //updateScore(label);
-                //updateStatistics();
-
                 saveStrValueToSharedPref("activityStatus", label);
             }
             catch(Exception e)
             {
                 Log.v("MainActivity e: ", e.toString());
-                //Log.v("MainActivity ERROR", "User activity: " + label + ", Confidence: " + confidence);
             }
         }
     }
@@ -235,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     }
 
     private void startTracking() {
-        Log.v("MainActivity", "startTracking");
         Intent intent1 = new Intent(MainActivity.this, BackgroundDetectedActivitiesService.class);
         startService(intent1);
     }
@@ -244,7 +223,6 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     {
         Long tsLong = System.currentTimeMillis()/1000;
         String ts = tsLong.toString();
-        Log.e("MainActivity", "Time: " + ts);
         saveStrValueToSharedPref("currentTime", ts);
     }
 
@@ -252,7 +230,6 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     {
         String savedTimeStr = getStrValueToSharedPref("currentTime");
         int savedTimeInt = Integer.parseInt(savedTimeStr);
-        Log.e("MainActivity", "savedTimeInt: " + savedTimeInt);
 
         if(savedTimeInt != 0)
         {
@@ -262,18 +239,11 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
 
             int timeDifference = currentTimeInt - savedTimeInt;
 
-            Log.e("MainActivity", "currentTimeInt: " + currentTimeInt);
-            Log.e("MainActivity", "savedTimeInt: " + savedTimeInt);
-            Log.e("MainActivity", "Time diff: " + timeDifference);
-
             //Time difference affects to the score the following way:
             //Constants.PENALTY_DELAY = N / 1000 (seconds)
             //Given penalty to the current score = timeDifference (seconds) / N
-
             int currentScore = getIntValueFromSharedPref("currentScore");
             int penaltyScore = timeDifference / (Constants.PENALTY_DELAY / 1000);
-            Log.e("MainActivity", "(Constants.PENALTY_DELAY / 1000): " + (Constants.PENALTY_DELAY / 1000));
-
             int newScore = currentScore - penaltyScore;
             saveIntValueToSharedPref("currentScore", newScore);
         }
@@ -283,10 +253,8 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     private void checkWinningCondition()
     {
         int score = getIntValueFromSharedPref("currentScore");
-        Log.e("MainActivity", "t1");
         if(score <= Constants.MIN_SCORE)
         {
-            Log.e("MainActivity", "t2");
             //You lost
             Context context = MainActivity.this;
             new AlertDialog.Builder(context)
@@ -298,7 +266,6 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
 
-                            Log.v("MainActivity", "Scores reset");
                             saveIntValueToSharedPref("currentScore", 0);
                             saveIntValueToSharedPref("totalScore", 0);
                             saveIntValueToSharedPref("distance", 0);
@@ -307,7 +274,6 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
-            Log.v("MainActivity", "Scores reset");
             saveIntValueToSharedPref("currentScore", 0);
             saveIntValueToSharedPref("totalScore", 0);
             saveIntValueToSharedPref("distance", 0);
@@ -326,7 +292,6 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
 
-                            Log.v("MainActivity", "Scores reset");
                             saveIntValueToSharedPref("currentScore", 0);
                             saveIntValueToSharedPref("totalScore", 0);
                             saveIntValueToSharedPref("distance", 0);
@@ -341,10 +306,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
     private void updateScoreColor(TextView scoreTv)
     {
         String current_score_string = scoreTv.getText().toString();
-        Log.v("MainActivity", "current_score_string 2: " + current_score_string);
         int current_score_int = Integer.parseInt(current_score_string);
-
-        Log.v("MainActivity", "current_score_int 2: " + current_score_int);
 
         if(current_score_int < 100)
         {
@@ -416,11 +378,8 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
 
             updateScoreColor(currentScoreCircleTv);
 
-            Log.e("MainActivity", "currentScore: " + currentScoreStr);
-            Log.e("MainActivity", "totalScore: " + totalScoreStr);
-            Log.e("MainActivity", "dist: " + distanceStr);
             String activity = getStrValueToSharedPref("currentActivity");
-            Log.e("MainActivity", "activity: " + activity);
+
         }
         catch(NullPointerException e)
         {
@@ -443,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         {
             saveStrValueToSharedPref("freezeStatus", "false");
             current_score_int = current_score_int + pointModifier;
-            Log.e("ActivityStatus", Integer.toString(current_score_int));
+
             //Save current score
             saveIntValueToSharedPref(key, current_score_int);
 
@@ -462,11 +421,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         int doNothing_score = 0;
 
         String activityStatus = getStrValueToSharedPref("activityStatus");
-        Log.v("MainActivity", "statusStrPause: " + activityStatus);
-
         int currentScore = getIntValueFromSharedPref("currentScore");
-        Log.v("MainActivity", "currentScore: " + currentScore);
-
         //User will lose points when still.
         if(activityStatus.equals(getString(R.string.still)))
         {

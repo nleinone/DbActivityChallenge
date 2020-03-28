@@ -42,7 +42,6 @@ public class BackgroundDetectedActivitiesService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.v("MainActivity", "onCreate();");
         mActivityRecognitionClient = new ActivityRecognitionClient(this);
         mIntentService = new Intent(this, ActivityIntentService.class);
         mPendingIntent = PendingIntent.getService(this, 1, mIntentService, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -58,12 +57,10 @@ public class BackgroundDetectedActivitiesService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        Log.v("MainActivity", "onStartCommand();");
         return START_STICKY;
     }
 
     public void requestActivityUpdatesButtonHandler() {
-        Log.v("MainActivity", "requestActivityUpdatesButtonHandler();");
         Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
                 Constants.DETECTION_INTERVAL_IN_MILLISECONDS,
                 mPendingIntent);

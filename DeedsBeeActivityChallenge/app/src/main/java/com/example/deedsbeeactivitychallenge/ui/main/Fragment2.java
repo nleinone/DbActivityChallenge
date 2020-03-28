@@ -52,7 +52,6 @@ public class Fragment2 extends Fragment {
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
 
-                                    Log.v("MainActivity", "Scores reset");
                                     mListener.saveIntValueToSharedPref("currentScore", 0);
                                     mListener.saveIntValueToSharedPref("totalScore", 0);
                                     mListener.saveIntValueToSharedPref("distance", 0);
