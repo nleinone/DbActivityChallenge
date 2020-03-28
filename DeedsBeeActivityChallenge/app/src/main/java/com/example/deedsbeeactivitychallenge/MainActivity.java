@@ -122,50 +122,59 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         saveTimeToPrefs();
     }
     private void handleUserActivity(int type, int confidence) {
+
         String label = getString(R.string.unknown_activity);
 
         switch (type) {
             case DetectedActivity.IN_VEHICLE: {
                 label = getString(R.string.vehicle);
+                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.ON_BICYCLE: {
                 label = getString(R.string.bicycle);
+                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.ON_FOOT: {
                 label = getString(R.string.foot);
+                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.RUNNING: {
                 label = getString(R.string.running);
+                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.STILL: {
                 label = getString(R.string.still);
+                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.TILTING: {
                 label = getString(R.string.tilting);
+                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.WALKING: {
                 label = getString(R.string.walking);
+                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.UNKNOWN: {
                 label = getString(R.string.unknown_activity);
+                Log.v("ActivityStatus2", "User activity: " + label + ", Confidence: " + confidence);
                 break;
             }
         }
-
+        Log.v("ActivityStatus3", "User activity: " + label + ", Confidence: " + confidence);
         txtActivity = findViewById(R.id.activityTv);
         txtConfidence = findViewById(R.id.confTv);
 
         if (confidence > Constants.CONFIDENCE) {
             try
             {
-                Log.v("MainActivity", "User activity: " + label + ", Confidence: " + confidence);
+                //Log.v("MainActivity", "User activity: " + label + ", Confidence: " + confidence);
                 txtActivity.setText(label);
                 String text = "Confidence: " + confidence;
 
@@ -180,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
             catch(Exception e)
             {
                 Log.v("MainActivity e: ", e.toString());
-                Log.v("MainActivity ERROR", "User activity: " + label + ", Confidence: " + confidence);
+                //Log.v("MainActivity ERROR", "User activity: " + label + ", Confidence: " + confidence);
             }
         }
     }
@@ -434,12 +443,13 @@ public class MainActivity extends AppCompatActivity implements Fragment1.OnFragm
         {
             saveStrValueToSharedPref("freezeStatus", "false");
             current_score_int = current_score_int + pointModifier;
+            Log.e("ActivityStatus", Integer.toString(current_score_int));
             //Save current score
             saveIntValueToSharedPref(key, current_score_int);
 
             //Save total score
             int totalScore = getIntValueFromSharedPref("totalScore");
-            totalScore = totalScore + current_score_int;
+            totalScore = totalScore + pointModifier;
             saveIntValueToSharedPref("totalScore", totalScore);
         }
     }
